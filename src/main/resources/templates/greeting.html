@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h2>
+    <div sec:authorize="!isAuthenticated()">
+        <div>
+            Hello, Unknown. Please <a th:href="@{/login}">Login</a>
+        </div>
+    </div>
+
+    <div sec:authorize="isAuthenticated()">
+        <div>Hello, <b th:text="${name}">User</b>
+        <a th:href="@{/main}">Main page</a>
+        </div>
+    </div>
+</h2>
+</body>
+</html>

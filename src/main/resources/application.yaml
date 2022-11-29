@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sweater
+    username: postgres
+    password: 123
+  jpa:
+    generate-ddl: true
+    show-sql: true
+  main:
+    allow-circular-references: true

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+<a sec:authorize="hasAnyAuthority('ADMIN')" th:href="@{/users}">Users List</a>
+<form th:action="@{/main}" th:object="${message}" method="post">
+    <p>Text: <input type="text" th:field="*{text}"></p>
+    <p>Tag: <input type="text" th:field="*{tag}"></p>
+    <p><input type="submit" value="Submit"></p>
+</form>
+<form th:action="@{/main}" method="get">
+    Найти по ключевому слову: <input type="text" name="field" th:value="${field}">
+    <input type="submit" value="Найти">
+</form>
+<span>Список сообщений:</span>
+<table>
+    <tr th:each="message : ${messages}">
+        <td><span th:text="${message.getId()}">Id</span></td>
+        <td><span th:text="${message.getText()}">Text</span></td>
+        <td><span th:text="${message.getTag()}">Tag</span></td>
+        <td><span th:text="${message.getAuthorName()}">Author</span></td>
+    </tr>
+</table>
+</body>
+</html>
