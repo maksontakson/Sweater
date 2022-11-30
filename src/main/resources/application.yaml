@@ -1,10 +1,16 @@
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/sweater
     username: postgres
-    password: 123
+    password: postgres
   jpa:
     generate-ddl: true
     show-sql: true
   main:
     allow-circular-references: true
+upload.path: d:/programs/javaprojects/sweater/uploads
+

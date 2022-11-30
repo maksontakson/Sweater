@@ -3,15 +3,17 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
 <a sec:authorize="hasAnyAuthority('ADMIN')" th:href="@{/users}">Users List</a>
-<form th:action="@{/main}" th:object="${message}" method="post">
-    <p>Text: <input type="text" th:field="*{text}"></p>
-    <p>Tag: <input type="text" th:field="*{tag}"></p>
+<form th:action="@{/main}" th:object="${message}" method="post" enctype="multipart/form-data">
+    <p>Text: <input type="text" th:field="*{text}" placeholder="Введите сообщение"></p>
+    <p>Tag: <input type="text" th:field="*{tag}" placeholder="Введите тэг"></p>
+    <p>File <input type="file" name="file"></p>
     <p><input type="submit" value="Submit"></p>
 </form>
 <form th:action="@{/main}" method="get">
@@ -25,6 +27,7 @@
         <td><span th:text="${message.getText()}">Text</span></td>
         <td><span th:text="${message.getTag()}">Tag</span></td>
         <td><span th:text="${message.getAuthorName()}">Author</span></td>
+        <td><img th:if="${message.fileName != null}" th:src="@{/img/{imgName}/(imgName=${message.getFileName})}"></td>
     </tr>
 </table>
 </body>
