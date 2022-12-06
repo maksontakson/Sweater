@@ -2,21 +2,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Spring Security Example </title>
-</head>
-<body>
-Login Page
+    <title>Login</title>
+    <div th:insert="~{fragments/common :: common}"></div>
+    <div class="container mt-5">
 <div th:if="${param.error}">
-    Invalid username and password.
+    Invalid username and password or account is not activated.
 </div>
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form th:action="@{/login}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div>
+        <form th:action="@{/login}" th:object="${message}" method="post">
+    <div th:text="${message}"></div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label"> User Name : </label>
+        <div class="col-sm-6">
+        <input type="text" name="username" class="form-control" placeholder="User name"/>
+        </div>
+    </div>
+    <div class="form-group row mt-1">
+        <label class="col-sm-2 col-form-label"> Password: </label>
+        <div class="col-sm-6">
+        <input type="password" name="password" class="form-control" placeholder="Password"/>
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Sign in</button>
 </form>
 <a th:href="@{/registration}">Add new user</a>
+    </div>
+    <div th:insert="~{fragments/js :: js}"></div>
 </body>
 </html>

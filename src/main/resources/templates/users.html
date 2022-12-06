@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
+    <title>Users</title>
+    <div th:insert="~{fragments/common :: common}"></div>
+    <div class="container mt-5">
 List of Users:
 <table>
     <tr>
@@ -17,5 +16,7 @@ List of Users:
         <td><a th:href="@{/users/{id}/(id=${user.id})}">edit</a></td>
     </tr>
 </table>
+    </div>
+    <div th:insert="~{fragments/js :: js}"></div>
 </body>
 </html>

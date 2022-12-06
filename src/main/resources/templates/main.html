@@ -1,26 +1,23 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
-<a sec:authorize="hasAnyAuthority('ADMIN')" th:href="@{/users}">Users List</a>
+    <title>Main</title>
+    <div th:insert="~{fragments/common :: common}"></div>
+    <div class="container mt-5">
+
+        <form th:action="@{/main}" method="get">
+            <div class="col-md-6">
+                <input type="text" name="field" class=form-control th:value="${field}" placeholder="Serach by tag">
+            </div>
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
 <form th:action="@{/main}" th:object="${message}" method="post" enctype="multipart/form-data">
-    <p>Text: <input type="text" th:field="*{text}" placeholder="Введите сообщение"></p>
-    <p>Tag: <input type="text" th:field="*{tag}" placeholder="Введите тэг"></p>
+    <p>Text: <input type="text" th:field="*{text}" placeholder="Enter message"></p>
+    <p>Tag: <input type="text" th:field="*{tag}" placeholder="Enter Tag"></p>
     <p>File <input type="file" name="file"></p>
     <p><input type="submit" value="Submit"></p>
 </form>
-<form th:action="@{/main}" method="get">
-    Найти по ключевому слову: <input type="text" name="field" th:value="${field}">
-    <input type="submit" value="Найти">
-</form>
-<span>Список сообщений:</span>
+<span>List of messages:</span>
 <table>
     <tr th:each="message : ${messages}">
         <td><span th:text="${message.getId()}">Id</span></td>
@@ -30,5 +27,7 @@
         <td><img th:if="${message.fileName != null}" th:src="@{/img/{imgName}/(imgName=${message.getFileName})}"></td>
     </tr>
 </table>
+    </div>
+    <div th:insert="~{fragments/js :: js}"></div>
 </body>
 </html>

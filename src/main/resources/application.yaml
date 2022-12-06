@@ -12,5 +12,17 @@ spring:
     show-sql: true
   main:
     allow-circular-references: true
+  mail:
+    host: smtp.gmail.com
+    username: maksymkotlyar@gmail.com
+    password: pqgvhcesrukcxczh
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+mail.debug: true
 upload.path: d:/programs/javaprojects/sweater/uploads
 

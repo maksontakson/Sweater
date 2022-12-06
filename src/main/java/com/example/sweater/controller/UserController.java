@@ -25,8 +25,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String userEditForm(@PathVariable Integer id, Model model) {
-        Optional<User> user = userService.findById(id);
-        User userDto = user.get();
+        User userDto = userService.findById(id);
         model.addAttribute("user", userDto);
         model.addAttribute("roles", Role.values());
         return "userEdit";
@@ -34,11 +33,7 @@ public class UserController {
 
     @PostMapping("/userSave")
     public String userSave(@ModelAttribute User user) {
-        User userFromDb = userService.findByName(user.getUserName());
-        userFromDb.setUserName(user.getUserName());
-        userFromDb.setPassword(user.getPassword());
-        userFromDb.setRoles(user.getRoles());
-        userService.save(userFromDb);
+        userService.edit(user);
         return "redirect:/users";
     }
 }

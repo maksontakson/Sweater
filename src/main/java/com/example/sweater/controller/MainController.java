@@ -58,7 +58,6 @@ public class MainController {
                            Model model,
                            Principal principal) throws IOException {
         if(file != null && !file.getOriginalFilename().isBlank()) {
-            System.out.println(file.getOriginalFilename());
             String uuidFile = UUID.randomUUID().toString();
             String resultFileName = uuidFile + "." + file.getOriginalFilename();
             file.transferTo(new File(uploadPath + "/" + resultFileName));

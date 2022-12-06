@@ -4,9 +4,11 @@ import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
 import com.example.sweater.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Collections;
@@ -24,15 +26,23 @@ public class RegistrationController {
     }
     @PostMapping("/registration")
     public String addUser(User user, Model model) throws NoSuchFieldException {
-        User userFromDb = userService.findByName(user.getUserName());
-        if(userFromDb != null) {
+        if(!userService.save(user)) {
             model.addAttribute("model", "User exists!");
 //            throw new NoSuchFieldException("There is already exists user with the specified name");
             return "registration";
         }
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        userService.save(user);
         return "redirect:/login";
+    }
+
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable String code) {
+        boolean isActivated = userService.activateUser(code);
+
+        if(isActivated) {
+            model.addAttribute("message", "User successfully activated");
+        } else {
+            model.addAttribute("message", "Activation code is not found");
+        }
+        return "login";
     }
 }

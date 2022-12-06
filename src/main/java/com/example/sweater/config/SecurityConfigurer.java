@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import javax.annotation.PostConstruct;
 
@@ -37,17 +38,23 @@ public class SecurityConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/", "/registration", "/static/**").permitAll()
-                        .antMatchers("/user").hasAnyAuthority("ADMIN")
+                        .antMatchers("/", "/registration", "/static/**", "/activate/*").permitAll()
+                        .antMatchers("/users").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
+                        .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll());
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationHandler();
     }
 
     @Bean

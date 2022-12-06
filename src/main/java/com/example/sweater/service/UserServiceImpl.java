@@ -10,18 +10,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final MailSender mailSender;
 
-    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userRepo, PasswordEncoder passwordEncoder, MailSender mailSender) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -30,8 +30,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public boolean save(User user) {
+        User userFromDb = userRepo.findByUserName(user.getUserName());
+
+        if(userFromDb != null) {
+            return false;
+        }
+
+        user.setActive(false);
+        user.setRoles(Collections.singleton(Role.USER));
+        user.setActivationCode(UUID.randomUUID().toString());
         userRepo.save(user);
+
+        if(!user.getEmail().isBlank()) {
+            String message = String.format(
+                    "Hello, %s \n" +
+                        "Welcome to Sweater. Please visit next link: http://localhost:8080/activate/%s",
+                    user.getUserName(),
+                    user.getActivationCode()
+            );
+            mailSender.send(user.getEmail(), "Activation code", message);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void edit(User user) {
+        User userFromDb = userRepo.findByUserName(user.getUserName());
+        userFromDb.setUserName(user.getUserName());
+        userFromDb.setPassword(user.getPassword());
+        userFromDb.setRoles(user.getRoles());
+        userRepo.save(userFromDb);
     }
 
     @Override
@@ -40,15 +70,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Integer id) {
-        return userRepo.findById(id);
+    public User findById(Integer id) {
+        Optional<User> optional = userRepo.findById(id);
+        User user = optional.get();
+        return user;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public boolean activateUser(String code) {
+        User user = userRepo.findByActivationCode(code);
+
+        if(user == null) {
+            return false;
+        }
+
+        user.setActive(true);
+        user.setActivationCode(null);
+
+        userRepo.save(user);
+        return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws RuntimeException {
         User user = userRepo.findByUserName(username);
         if(user == null) {
             throw new UsernameNotFoundException("User not found with name: " + username);
+        }
+        if(!user.isActive()) {
+            throw new RuntimeException("User is not activated");
         }
         List<GrantedAuthority> roles = new ArrayList<>();
         for (Role role : user.getRoles()) {
