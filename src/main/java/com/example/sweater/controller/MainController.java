@@ -8,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -53,22 +59,30 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String postMain(@ModelAttribute Message message,
+    public String postMain(@Valid @ModelAttribute Message message,
+                           BindingResult bindingResult,
                            @RequestParam("file") MultipartFile file,
                            Model model,
                            Principal principal) throws IOException {
-        if(file != null && !file.getOriginalFilename().isBlank()) {
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-            message.setFileName(resultFileName);
+        if(bindingResult.hasErrors()) {
+            List<Message> messageList = messageService.getAllMessages();
+            model.addAttribute("messages", messageList);
+            return "main";
         }
-        if(principal != null) {
-            User user = userService.findByName(principal.getName());
-            message.setAuthor(user);
+        else {
+            if (file != null && !file.getOriginalFilename().isBlank()) {
+                String uuidFile = UUID.randomUUID().toString();
+                String resultFileName = uuidFile + "." + file.getOriginalFilename();
+                file.transferTo(new File(uploadPath + "/" + resultFileName));
+                message.setFileName(resultFileName);
+            }
+            if (principal != null) {
+                User user = userService.findByName(principal.getName());
+                message.setAuthor(user);
+            }
+            if (!message.getText().isBlank() || !message.getTag().isBlank())
+                messageService.save(message);
         }
-        if(!message.getText().isBlank() || !message.getTag().isBlank())
-            messageService.save(message);
         return "redirect:/main";
     }
 }

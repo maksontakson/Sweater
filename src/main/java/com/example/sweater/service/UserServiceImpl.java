@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
 
         if(!user.getEmail().isBlank()) {
@@ -57,11 +58,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void edit(User user) {
-        User userFromDb = userRepo.findByUserName(user.getUserName());
-        userFromDb.setUserName(user.getUserName());
-        userFromDb.setPassword(user.getPassword());
-        userFromDb.setRoles(user.getRoles());
-        userRepo.save(userFromDb);
+        Integer id = user.getId();
+        user.setActive(false);
+        user.setActivationCode(UUID.randomUUID().toString());
+        userRepo.save(user);
+
+        if(!user.getEmail().isBlank()) {
+            String message = String.format(
+                    "Hello, %s \n" +
+                            "Welcome to Sweater. Please visit next link: http://localhost:8080/activate/%s",
+                    user.getUserName(),
+                    user.getActivationCode()
+            );
+            mailSender.send(user.getEmail(), "Activation code", message);
+        }
     }
 
     @Override
@@ -104,7 +114,7 @@ public class UserServiceImpl implements UserService {
         for (Role role : user.getRoles()) {
             roles.add(new SimpleGrantedAuthority(role.name()));
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), roles);
     }
 }

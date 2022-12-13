@@ -4,11 +4,12 @@
     <title>User edit</title>
     <div th:insert="~{fragments/common :: common}"></div>
     <div class="container mt-5">
-Edit your user
+<div>Edit your user</div>
 <form th:action="@{/users/userSave}" th:object="${user}" method="post">
-    <p>Id: <span th:text="${user.id}" th:field="*{id}"></span></p>
+    <input type="hidden" th:field="*{id}"></p>
     <p>UserName: <input type="text" th:field="*{userName}"></p>
     <p>Password: <input type="text" th:field="*{password}"></p>
+    <p>Email: <input type="text" th:field="*{email}"></p>
     <p>
             <label>Roles:
                 <input type="checkbox" name="roles"
@@ -19,7 +20,7 @@ Edit your user
                 />
             </label>
     </p>
-        <p><input type="submit" value="Submit"></p>
+        <p><button class="btn btn-primary " type="submit">Submit</button></p>
 </form>
     </div>
     <div th:insert="~{fragments/js :: js}"></div>

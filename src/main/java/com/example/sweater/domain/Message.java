@@ -1,13 +1,20 @@
 package com.example.sweater.domain;
 
-import javax.persistence.*;
 
-@Entity// This tells Hibernate to make a table out of this class
+import org.hibernate.validator.constraints.Length;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+@Entity
 public class Message {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-
+    @Size(min = 2, message = "name must be at least two symbols")
+    @NotBlank(message = "Please fill the message")
+    @Length(max = 2048, message ="Message is too long")
     private String text;
 
     private String tag;

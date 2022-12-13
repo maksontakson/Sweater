@@ -9,25 +9,36 @@
             <div class="col-md-6">
                 <input type="text" name="field" class=form-control th:value="${field}" placeholder="Serach by tag">
             </div>
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-primary mt-1" type="submit">Search</button>
         </form>
-<form th:action="@{/main}" th:object="${message}" method="post" enctype="multipart/form-data">
-    <p>Text: <input type="text" th:field="*{text}" placeholder="Enter message"></p>
-    <p>Tag: <input type="text" th:field="*{tag}" placeholder="Enter Tag"></p>
-    <p>File <input type="file" name="file"></p>
-    <p><input type="submit" value="Submit"></p>
-</form>
-<span>List of messages:</span>
-<table>
-    <tr th:each="message : ${messages}">
-        <td><span th:text="${message.getId()}">Id</span></td>
-        <td><span th:text="${message.getText()}">Text</span></td>
-        <td><span th:text="${message.getTag()}">Tag</span></td>
-        <td><span th:text="${message.getAuthorName()}">Author</span></td>
-        <td><img th:if="${message.fileName != null}" th:src="@{/img/{imgName}/(imgName=${message.getFileName})}"></td>
-    </tr>
-</table>
+
+        <form class="mt-2" th:action="@{/main}" th:object="${message}" method="post" enctype="multipart/form-data">
+            <div>
+                <p>Text: <input type="text" th:field="*{text}" name="text" placeholder="Enter message"></p>
+                <ul>
+                    <li th:each="err : ${#fields.errors('text')}" th:text="${err}" class="error" />
+                </ul>
+            </div>
+            <p>Tag: <input type="text" th:field="*{tag}" name="tag" placeholder="Enter Tag"></p>
+            <p>File <input type="file" name="file"></p>
+            <p>
+                <button class="btn btn-primary " type="submit">Add new message</button>
+            </p>
+        </form>
+        <span th:if="${messages.size() != 0}">List of messages:</span>
+
+        <table>
+            <tr th:each="message : ${messages}">
+                <td><img th:if="${message.fileName != null}"
+                         th:src="@{/img/{imgName}/(imgName=${message.getFileName})}" class="card-img-top"></td>
+                <td><span th:text="${message.getId()}">Id</span></td>
+                <td><span th:text="${message.getText()}">Text</span></td>
+                <td><span th:text="${message.getTag()}">Tag</span></td>
+                <td><span th:text="${message.getAuthorName()}">Author</span></td>
+            </tr>
+        </table>
+    </div>
     </div>
     <div th:insert="~{fragments/js :: js}"></div>
-</body>
+    </body>
 </html>

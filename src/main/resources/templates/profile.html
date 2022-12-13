@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User edit</title>
+    <div th:insert="~{fragments/common :: common}"></div>
+    <div class="container mt-5">
+        Edit your user
+        <form th:action="@{/users/profile/userSave}" th:object="${user}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <p>UserName: <input type="text" th:field="*{userName}"></p>
+            <p>Password: <input type="text" th:field="*{password}"></p>
+            <p>Email: <input type="text" th:field="*{email}"></p>
+            <p><button class="btn btn-primary " type="submit">Submit</button></p>
+        </form>
+    </div>
+    <div th:insert="~{fragments/js :: js}"></div>
+    </body>
+</html>

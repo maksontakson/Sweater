@@ -10,6 +10,8 @@ spring:
   jpa:
     generate-ddl: true
     show-sql: true
+    hibernate:
+      ddl-auto: validate
   main:
     allow-circular-references: true
   mail:
@@ -25,4 +27,5 @@ spring:
             enable: true
 mail.debug: true
 upload.path: d:/programs/javaprojects/sweater/uploads
+recaptcha.secret: 6LcWF3ojAAAAAF-QkfhTcbeA7cs69qTxGwzLxBTp
 

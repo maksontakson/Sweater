@@ -1,9 +1,9 @@
 package com.example.sweater.domain;
 
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -12,9 +12,13 @@ public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
+    @NotBlank(message = "Username cannot be empty")
     private String userName;
+    @NotBlank(message = "Password cannot be empty")
     private String password;
     private boolean active;
+    @Email(message = "Email is not correct")
+    @NotBlank(message = "Email cannot be empty")
     private String email;
     private String activationCode;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
